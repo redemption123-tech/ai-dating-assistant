@@ -25,6 +25,9 @@ Dating apps (Tinder, Hinge, Bumble) run in isolated application sandboxes. An as
 | iOS Keyboard      | Very Low        | High                  | Highly Feasible     |
 | Extension         | (In-app typing) | `UIInputViewController`| 30MB RAM Limit!     |
 +-------------------+-----------------+-----------------------+---------------------+
+| ReplayKit Scroll  | Very Low        | Medium-High           | 100% Feasible       |
+| Broadcast         | (3-sec scroll)  | `RPBroadcastSample`   | 50MB RAM Limit      |
++-------------------+-----------------+-----------------------+---------------------+
 | Accessibility /   | None            | Prohibited            | NOT Feasible        |
 | Screen Reader     |                 |                       | Guaranteed Rejection|
 +-------------------+-----------------+-----------------------+---------------------+
@@ -52,7 +55,18 @@ Dating apps (Tinder, Hinge, Bumble) run in isolated application sandboxes. An as
      - Keyboards cannot present standard `PHPickerViewController`.
      - *Solution*: The main app saves the latest user screenshots into a shared App Group (`group.com.company.aidatingassistant`), or the user copies the chat text / screenshot to clipboard, which the keyboard reads via `UIPasteboard`.
 
-### Modality 3: iOS Share Sheet Action Extension
+### Modality 3: ReplayKit Continuous Scroll Broadcast Extension (`RPBroadcastSampleHandler`)
+- **Mechanism**:
+  - User starts broadcast from Control Center, scrolls through a complete profile or 30-message chat history in 3–5 seconds, and stops.
+  - Runs a local on-device frame translation tracker (`VNTranslationalImageRegistrationRequest`).
+  - Samples crisp keyframes every ~700–800 pixels of vertical displacement.
+  - Generates 4–8 static images with **zero video AI token cost**.
+- **Technical Constraints**:
+  - ReplayKit Broadcast Extension RAM ceiling: **~50MB**.
+  - Must perform in-memory downsampling and image encoding without buffering large video chunks.
+- **Feasibility**: High. Clean native Apple framework used by apps like Picsew and Twitch.
+
+### Modality 4: iOS Share Sheet Action Extension
 - **Mechanism**:
   - When the user takes an iOS screenshot (Power + Volume Up), a floating thumbnail appears.
   - The user taps the thumbnail, taps **Share**, and selects our **"Dating Assistant"** action.
