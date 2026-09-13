@@ -90,7 +90,75 @@ Instead of dumping 3 generic lines, the AI acts as a **social detective**. It ev
 
 ---
 
-## 3. Comprehensive Feature Evaluation Matrix (RICE + Kano)
+## 3. Parallel Match History & Two-Layer Memory Architecture
+
+Current market apps are **stateless and suffer from amnesia**—every screenshot is evaluated in isolation with zero memory of past conversations. We solve this by introducing **Stateful Match Dossiers** powered by a token-efficient **Two-Layer Memory Architecture**:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                            TWO-LAYER MEMORY ARCHITECTURE                                    │
+├──────────────────────────────────────────────┬──────────────────────────────────────────────┤
+│ Layer 1: The Raw Sliding Window              │ Layer 2: Compressed Dossier Summary          │
+├──────────────────────────────────────────────┼──────────────────────────────────────────────┤
+│ • Ingests: Last 6 to 10 messages verbatim    │ • Ingests: The preceding 100+ message history│
+│ • Purpose: Captures immediate rhythm & tone  │ • Purpose: Stores permanent facts, inside    │
+│ • Token footprint: ~150 - 250 tokens         │   jokes, callbacks, and exhausted topics     │
+│ • Cost: < 0.002 cents                        │ • Token footprint: ~100 tokens (bulleted)    │
+│                                              │ • Cost: < 0.001 cents                        │
+├──────────────────────────────────────────────┴──────────────────────────────────────────────┤
+│ Total Request Footprint: ~400 - 500 tokens total (Constant cost regardless of chat length)  │
+└─────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Key Technical Behaviors:
+1. **Automatic Match Linking via Header OCR**:
+   - The OCR engine reads the match's name and avatar from the top navigation bar of the screenshot/scroll.
+   - Automatically associates new incoming screenshots with that match's existing dossier in SwiftData.
+2. **Background Context Summarization**:
+   - As new messages arrive, a lightweight background prompt condenses older messages into key extracted facts (e.g., *"Lives in Brooklyn, works in design, dislikes cold brew, planning trip to Japan"*).
+   - Prevents prompt bloat and guarantees ultra-low token costs even for 500-message relationship histories.
+3. **Relationship Progression State Machine**:
+   - Tracks each match's stage: `Opener_Sent` → `Banter_Established` → `Deeper_Connection` → `Date_Closing`.
+   - The AI automatically adapts its strategic objective based on the current stage.
+
+---
+
+---
+
+## 4. Foundational Infrastructure: Auth, Account & Payments
+
+To support our core AI features and satisfy Apple App Store guidelines, we define three foundational platform modules:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+│                           CORE FOUNDATIONAL INFRASTRUCTURE                                  │
+├──────────────────────────────┬──────────────────────────────┬───────────────────────────────┤
+│ 1. Authentication Engine     │ 2. Account & Privacy Control │ 3. Payments & Entitlements    │
+├──────────────────────────────┼──────────────────────────────┼───────────────────────────────┤
+│ • Sign in with Apple         │ • Tone & Persona Settings    │ • Apple StoreKit 2 IAP Engine │
+│ • Google Sign-In (OAuth)     │ • 1-Tap Account/Data Delete  │ • 5 Free Daily Credits Quota  │
+│ • Guest / Try-First Mode     │ • Encrypted Cloud Backup     │ • Receipt Validation Webhook  │
+└──────────────────────────────┴──────────────────────────────┴───────────────────────────────┘
+```
+
+### 1. Authentication & Onboarding
+- **Sign in with Apple**: Native biometric 1-tap sign-in *(Apple Guideline 4.8 strictly mandates Apple Sign-In when any third-party auth like Google is used)*.
+- **Google Sign-In**: Powered by Google Identity SDK (`GIDSignIn`).
+- **Frictionless Guest / "Try-First" Mode**: Allows new users to test 2 free screenshot scans before requiring account registration, boosting download-to-activation conversion.
+
+### 2. Account Management & Privacy Compliance
+- **User Profile & Preference Engine**: Configures default tone, gender preferences, and customized "Sound Like Me" parameters.
+- **Mandatory Privacy Deletion**: 1-tap *"Delete Account & Wipe All Match Data"* directly inside the app, satisfying **Apple Guideline 5.1.1(v)** and GDPR/CCPA.
+- **Encrypted Match Sync**: Syncs match dossiers securely across user devices using end-to-end encrypted storage.
+
+### 3. Payment & Subscription System
+- **Apple StoreKit 2 Engine**: Swift-native async/await subscription engine handling auto-renewing subscriptions ($7.99/week with 3-day free trial; $49.99/year).
+- **Daily Credit System**: Tracks user's 5 free daily suggestions; resets automatically at local midnight.
+- **Transparent Paywall UI**: Clear subscription terms, direct "Restore Purchases" button, and zero dark patterns.
+
+---
+
+## 5. Comprehensive Feature Evaluation Matrix (RICE + Kano)
 
 ```
 +----+-----------------------------------------+-----------------+-----------+--------+--------+-------+--------+------------+-------------------------------------+
@@ -105,20 +173,25 @@ Instead of dumping 3 generic lines, the AI acts as a **social detective**. It ev
 | F07| iOS Custom Keyboard Extension           | Workflow        | Perform.  | 9      | 3.0    | 80%   | 6.0    | **3.60**   | **P0: Core MVP Launch**             |
 | F08| ReplayKit Scroll Broadcast (Profiles)   | Deep Ingestion  | Delighter | 8      | 3.0    | 85%   | 4.5    | **4.53**   | **P0: Core MVP Launch**             |
 | F09| Long Existing Chat Ingestion (ReplayKit)| Context AI      | Delighter | 7      | 3.0    | 80%   | 3.5    | **4.80**   | **P0: Core MVP Launch**             |
-| F10| Date Closing & Transition Advisor       | Coaching        | Perform.  | 7      | 2.5    | 80%   | 3.0    | **4.67**   | **P1: Phase 1.5 Update**            |
-| F11| Dating Profile Photo Auditor & Scorer   | Profile Doctor  | Perform.  | 6      | 2.5    | 85%   | 4.0    | **3.19**   | **P1: Phase 1.5 Update**            |
-| F12| Bio & Prompt Revamp Engine              | Profile Doctor  | Perform.  | 7      | 2.0    | 90%   | 2.5    | **5.04**   | **P1: Phase 1.5 Update**            |
-| F13| Discreet / Camouflage App Mode          | Privacy / UX    | Delighter | 5      | 1.5    | 95%   | 1.0    | **7.13**   | **P1: Phase 1.5 Update**            |
-| F14| Conversation Health & Ghosting Meter    | Analytics       | Delighter | 6      | 1.5    | 75%   | 3.5    | **1.93**   | **P2: V2.0 Roadmap**                |
-| F15| Interactive Mock Date Simulator (Text)  | Gamification    | Delighter | 4      | 2.0    | 80%   | 5.0    | **1.28**   | **P2: V2.0 Roadmap**                |
-| F16| Voice Call Practice Simulator           | Advanced AI     | Delighter | 3      | 2.0    | 70%   | 8.0    | **0.53**   | **P3: Long Term**                   |
-| F17| Automated Swiping & Chatting Bot        | Automation      | Unsafe    | 4      | 2.5    | 20%   | 9.0    | **0.22**   | **DO NOT BUILD (High Ban Risk)**     |
+| F10| Parallel Match History & Dossiers       | Stateful Memory | Must-Have | 9      | 3.0    | 90%   | 3.5    | **6.94**   | **P0: Core MVP Launch**             |
+| F11| Two-Layer Token-Efficient Memory Engine | AI Architecture | Must-Have | 10     | 2.5    | 90%   | 2.0    | **11.25**  | **P0: Core MVP Launch**             |
+| F12| Sign in with Apple & Google Sign-In     | Foundation/Auth | Must-Have | 10     | 2.0    | 95%   | 2.0    | **9.50**   | **P0: Core MVP Launch**             |
+| F13| Account & Privacy Controls (Data Delete)| Foundation/Acct | Must-Have | 10     | 1.5    | 95%   | 1.5    | **9.50**   | **P0: Core MVP Launch**             |
+| F14| StoreKit 2 Payments & Daily Credits     | Foundation/Pay  | Must-Have | 10     | 3.0    | 90%   | 3.0    | **9.00**   | **P0: Core MVP Launch**             |
+| F15| Date Closing & Transition Advisor       | Coaching        | Perform.  | 7      | 2.5    | 80%   | 3.0    | **4.67**   | **P1: Phase 1.5 Update**            |
+| F16| Dating Profile Photo Auditor & Scorer   | Profile Doctor  | Perform.  | 6      | 2.5    | 85%   | 4.0    | **3.19**   | **P1: Phase 1.5 Update**            |
+| F17| Bio & Prompt Revamp Engine              | Profile Doctor  | Perform.  | 7      | 2.0    | 90%   | 2.5    | **5.04**   | **P1: Phase 1.5 Update**            |
+| F18| Discreet / Camouflage App Mode          | Privacy / UX    | Delighter | 5      | 1.5    | 95%   | 1.0    | **7.13**   | **P1: Phase 1.5 Update**            |
+| F19| Conversation Health & Ghosting Meter    | Analytics       | Delighter | 6      | 1.5    | 75%   | 3.5    | **1.93**   | **P2: V2.0 Roadmap**                |
+| F20| Interactive Mock Date Simulator (Text)  | Gamification    | Delighter | 4      | 2.0    | 80%   | 5.0    | **1.28**   | **P2: V2.0 Roadmap**                |
+| F21| Voice Call Practice Simulator           | Advanced AI     | Delighter | 3      | 2.0    | 70%   | 8.0    | **0.53**   | **P3: Long Term**                   |
+| F22| Automated Swiping & Chatting Bot        | Automation      | Unsafe    | 4      | 2.5    | 20%   | 9.0    | **0.22**   | **DO NOT BUILD (High Ban Risk)**     |
 +----+-----------------------------------------+-----------------+-----------+--------+--------+-------+--------+------------+-------------------------------------+
 ```
 
 ---
 
-## 4. The Anti-Roadmap: What We Will NOT Build
+## 6. The Anti-Roadmap: What We Will NOT Build
 
 1. **Automated Swiping & Auto-Chatting Bots (CupidBot Model)**:
    - Violates Tinder/Bumble Terms of Service and Apple App Store Guideline 5.6.
@@ -130,18 +203,21 @@ Instead of dumping 3 generic lines, the AI acts as a **social detective**. It ev
 
 ---
 
-## 5. Phased Product Scope Summary
+## 7. Phased Product Scope Summary
 
 ```
 Phase 1: iOS MVP Scope (Sprint 1)
+├── [Foundation] Sign in with Apple & Google Sign-In + Guest Mode
+├── [Foundation] Account Preferences & 1-Tap Data Deletion (App Store Compliance)
+├── [Foundation] StoreKit 2 Subscription Engine + 5 Free Daily Credits Counter
 ├── [Core Ingestion] Quick Screenshot & Clipboard Auto-Detection
 ├── [Deep Ingestion] ReplayKit Continuous Scroll Broadcast (Zero Gallery Clutter)
 ├── [Intelligence] Whole-Profile Multi-Hook Discovery (Banter Strategy Board)
 ├── [Context AI] Long Existing Chat Ingestion (Scroll past 30+ messages)
+├── [Memory] Parallel Match History & Dossiers (Two-Layer Memory Architecture)
 ├── [Personalization] "Sound Like Me" Voice Customizer (Learns via real chat scroll)
 ├── [Workflow] Native iOS Custom Keyboard Extension (UIInputViewController)
-├── [AI Quality] Anti-Cringe & Moderation Guardrails
-└── [Monetization] StoreKit 2 Transparent Subscriptions + 5 Free Daily Credits
+└── [AI Quality] Anti-Cringe & Moderation Guardrails
 
 Phase 2: Strategic Coaching & Profile Doctor (v1.1 - v1.2)
 ├── [Coaching] Date Closing & "Ask Out" Timing Advisor
