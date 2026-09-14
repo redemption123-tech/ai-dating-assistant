@@ -23,8 +23,12 @@ ai-dating-assistant/
 │   │   ├── ai_architecture_and_cost.md
 │   │   ├── app_store_compliance_and_privacy.md
 │   │   └── feasibility_verdict_and_recommendations.md
-│   └── 03_feature_analysis/
-│       └── feature_prioritization_and_selection.md
+│   ├── 03_feature_analysis/
+│   │   └── feature_prioritization_and_selection.md
+│   ├── 04_design_system/
+│   │   └── design_language_specification.md
+│   └── assets/
+│       └── designs/
 ├── app/                  # iOS (SwiftUI) & Future Android Client
 ├── backend/              # AI Orchestration & API Gateway
 └── scripts/              # Research scripts and utilities
@@ -75,3 +79,4 @@ ai-dating-assistant/
 - [App Store Compliance, Safety & Privacy](docs/02_feasibility_study/app_store_compliance_and_privacy.md)
 - [Feasibility Verdict & Strategic Recommendations](docs/02_feasibility_study/feasibility_verdict_and_recommendations.md)
 - [Feature Analysis, RICE Prioritization & MVP Scope](docs/03_feature_analysis/feature_prioritization_and_selection.md)
+- [Design Language Specification (Spatial Sunset Glass)](docs/04_design_system/design_language_specification.md)
